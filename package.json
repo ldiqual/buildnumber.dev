@@ -12,8 +12,11 @@
     "@hapi/inert": "^5.2.1",
     "@hapi/joi": "^15.1.0",
     "bluebird": "^3.5.5",
+    "bookshelf": "^0.15.1",
+    "knex": "^0.19.1",
     "lodash": "^4.17.15",
-    "moment-timezone": "^0.5.26"
+    "moment-timezone": "^0.5.26",
+    "pg": "^7.12.1"
   },
   "devDependencies": {
     "@scoop/eslint-config-scoop": "^5.0.0",
