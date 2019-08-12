@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Buildnumber.io</title>
+
+    <!-- VENDOR -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Ladda/0.9.8/ladda.min.css">
+
+    <!-- CUSTOM -->
+    <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div id="title" class="row">
+            <img src="img/logo-title.png" id="logo-title">
+        </div>
+        <div id="subtitle" class="row">
+            <p>
+                Centralized build numbers for your apps and libraries.
+            </p>
+        </div>
+        <div id="signup" class="row">
+            <form action="#" id="signup-form">
+                <input type="text" placeholder="Your email" id="email-field">
+                <button id="signup-button" class="ladda-button" data-style="expand-right"><span class="button-text ladda-label">Get API token</span></button>
+            </form>
+        </div>
+        <div id="signup-result" class="row">
+            <div class="result result-success">Success!</div>
+            <div class="result result-error">Error!</div>
+        </div>
+        <div id="console" class="row">
+            <div id="console-container">
+                <div id="console-content">
+                    <p>
+                    $ <span class="blue">curl -X POST</span> <span class="orange">https://api.buildnumber.io/com.example.myapp/builds</span> \<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">--user</span> <span class="orange"><span class="api-key">API_TOKEN</span>:</span>
+                    </p>
+                    <p>&nbsp;</p>
+                    <p>{“buildNumber":42}</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc row" id="whatisthis">
+            <h1>What is this?</h1>
+
+            <img id="diagram" src="img/diagram.png">
+
+            <p><span class="brand">buildnumber.io</span> centralizes all your build numbers so they're kept in sync.</p>
+
+            <p>For instance, if you use Travis to build your iOS app but also build from your own computer, you’ll need to make sure Travis doesn't use the same build number than your computer's. You'll also need to make sure each build number is unique and incremental.</p>
+
+            <p>This is where <span class="brand">buildnumber.io</span> is helpful: by centralizing all your build numbers into one single database, we can give you a new, unique, and sequential build number to use in your next build.</p>
+        </div>
+
+        <div class="doc row" id="examples">
+            <h1>Examples</h1>
+
+            
+            <h2>Create a new build</h2>
+
+            
+            <p><p>This will create a new build for the <code>com.example.myapp</code> package. If you never created a build for this package before, the initial build number will be <code>1</code>.</p></p>
+            
+
+            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>{"buildNumber": 42}</code></pre>
+            
+            <h2>Create a new build and return its build number in plain text</h2>
+
+            
+            <p><p>This is useful for bash scripts, since you can just store the request output in a variable.</p></p>
+            
+
+            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds?output=buildNumber \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>43</code></pre>
+            
+            <h2>Create a new build with additional information</h2>
+
+            
+            <p><p>You can pass a JSON-encoded meta data dictionary for your build. You can retrieve this data later when querying a specific build.</p></p>
+            
+
+            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds \
+    --header 'Content-Type: application/json' \
+    --data '{"head": "60b7eca"}' \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>{"buildNumber": 44, "head": "60b7eca"}</code></pre>
+            
+            <h2>Get the last build</h2>
+
+            
+
+            <pre><code>$ curl https://api.buildnumber.io/com.example.myapp/builds/last \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>{"buildNumber": 44, "head": "60b7eca"}</code></pre>
+            
+            <h2>Get a specific build by its build number</h2>
+
+            
+
+            <pre><code>$ curl https://api.buildnumber.io/com.example.myapp/builds/43 \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>{"buildNumber": 43}</code></pre>
+            
+            <h2>Get a unique build number for a specific package version</h2>
+
+            
+            <p><p>Instead of generating a new build number that is unique for all builds, you can request a build number for a specific package version. For instance, you can request a build number for v1.0 of your package as follows.</p>
+<p>All the previous examples are valid with this pattern, you can create a build, get a specific build, get the last build, add extra parameters, just like you would do without a version. Both patterns can also be used altogether: you can request a build number specific to a version <em>and</em> you can request a build number that is unique to non-versionned packages.</p></p>
+            
+
+            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/1.0/builds \
+    --user <span class="api-key">API_TOKEN</span>:</code>
+    <code>{"buildNumber": 1}</code></pre>
+            
+        </div>
+
+        <div id="footer">
+            <p><img src="img/ldiqual.png">Copyright 2015 <a href="http://loisdiqual.com/">Loïs Di Qual</a> - <a href="mailto:support@buildnumber.io">Support</a> - <a href="https://github.com/ldiqual/buildnumber.io">Source Code</a></p>
+        </div>
+    </div>
+
+    <!-- VENDOR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.0.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Ladda/0.9.8/spin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Ladda/0.9.8/ladda.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Ladda/0.9.8/ladda.jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-url-parser/2.3.1/purl.min.js"></script>
+
+    <!-- CUSTOM -->
+    <script src="js/app.js"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-72694257-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
