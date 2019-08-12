@@ -60,11 +60,15 @@ a {
     border-radius: 8px;
     background-color: white;
     color: #011627;
-    width: 350px;
+    width: 300px;
     font-size: 25px;
     padding: 14px 20px;
     outline: none;
     font-weight:normal;
+}
+
+#app-identifier {
+    margin-left: 15px;
 }
 
 #email-field:disabled, #app-identifier {
