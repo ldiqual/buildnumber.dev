@@ -27,6 +27,7 @@
         <div id="signup" class="row">
             <form action="#" id="signup-form">
                 <input type="text" placeholder="Your email" id="email-field">
+                <input type="text" placeholder="App identifier (eg: com.example.myapp)" id="app-identifier">
                 <button id="signup-button" class="ladda-button" data-style="expand-right"><span class="button-text ladda-label">Get API token</span></button>
             </form>
         </div>
@@ -38,11 +39,11 @@
             <div id="console-container">
                 <div id="console-content">
                     <p>
-                    $ <span class="blue">curl -X POST</span> <span class="orange">https://api.buildnumber.io/com.example.myapp/builds</span> \<br>
+                    $ <span class="blue">curl -X POST</span> <span class="orange">https://api.buildnumber.io/builds</span> \<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">--user</span> <span class="orange"><span class="api-key">API_TOKEN</span>:</span>
                     </p>
                     <p>&nbsp;</p>
-                    <p>{“buildNumber":42}</p>
+                    <p>{“buildNumber": 42}</p>
                 </div>
             </div>
         </div>
@@ -68,7 +69,7 @@
             <p><p>This will create a new build for the <code>com.example.myapp</code> package. If you never created a build for this package before, the initial build number will be <code>1</code>.</p></p>
             
 
-            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds \
+            <pre><code>$ curl -X POST https://api.buildnumber.io/builds \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 42}</code></pre>
             
@@ -78,7 +79,7 @@
             <p><p>This is useful for bash scripts, since you can just store the request output in a variable.</p></p>
             
 
-            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds?output=buildNumber \
+            <pre><code>$ curl -X POST https://api.buildnumber.io/builds?output=buildNumber \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>43</code></pre>
             
@@ -88,7 +89,7 @@
             <p><p>You can pass a JSON-encoded meta data dictionary for your build. You can retrieve this data later when querying a specific build.</p></p>
             
 
-            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/builds \
+            <pre><code>$ curl -X POST https://api.buildnumber.io/builds \
     --header 'Content-Type: application/json' \
     --data '{"head": "60b7eca"}' \
     --user <span class="api-key">API_TOKEN</span>:</code>
@@ -98,7 +99,7 @@
 
             
 
-            <pre><code>$ curl https://api.buildnumber.io/com.example.myapp/builds/last \
+            <pre><code>$ curl https://api.buildnumber.io/builds/last \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 44, "head": "60b7eca"}</code></pre>
             
@@ -106,20 +107,9 @@
 
             
 
-            <pre><code>$ curl https://api.buildnumber.io/com.example.myapp/builds/43 \
+            <pre><code>$ curl https://api.buildnumber.io/builds/43 \
     --user <span class="api-key">API_TOKEN</span>:</code>
-    <code>{"buildNumber": 43}</code></pre>
-            
-            <h2>Get a unique build number for a specific package version</h2>
-
-            
-            <p><p>Instead of generating a new build number that is unique for all builds, you can request a build number for a specific package version. For instance, you can request a build number for v1.0 of your package as follows.</p>
-<p>All the previous examples are valid with this pattern, you can create a build, get a specific build, get the last build, add extra parameters, just like you would do without a version. Both patterns can also be used altogether: you can request a build number specific to a version <em>and</em> you can request a build number that is unique to non-versionned packages.</p></p>
-            
-
-            <pre><code>$ curl -X POST https://api.buildnumber.io/com.example.myapp/1.0/builds \
-    --user <span class="api-key">API_TOKEN</span>:</code>
-    <code>{"buildNumber": 1}</code></pre>
+    <code>{"buildNumber": 43, "head": "43b8ecf"}</code></pre>
             
         </div>
 
