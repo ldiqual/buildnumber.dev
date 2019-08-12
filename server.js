@@ -13,7 +13,7 @@ const user = {
     password: 'gusty'
 }
 
-const init = async() => {
+const initServer = async() => {
 
     const server = new Hapi.Server({
         port: process.env.PORT || 3000,
@@ -43,6 +43,14 @@ const init = async() => {
     addRoute({
         method: 'POST',
         path: '/tokens',
+        options: {
+            validate: {
+                payload: {
+                    email: Joi.string().email().required(),
+                    appIdentifier: Joi.string().min(3).required()
+                }
+            }
+        },
         handler: async(request, h) => {
             return {}
         }
@@ -56,13 +64,21 @@ const init = async() => {
         }
     })
 
-    await server.start()
-    console.log('Server running on %ss', server.info.uri)
+    return server
 }
 
-process.on('unhandledRejection', (err) => {
-    console.log(err)
-    process.exit(1)
-})
+module.exports = {
+    initServer
+}
 
-init()
+if (require.main === module) {
+    initServer()
+    .then(async server => {
+        await server.start()
+        console.log('Server running on %ss', server.info.uri)
+    })
+    .catch(err => {
+        console.log(err.stack)
+        process.exit(1)
+    })
+}

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js"
   },
   "dependencies": {
@@ -15,7 +15,14 @@
     "lodash": "^4.17.15",
     "moment-timezone": "^0.5.26"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@scoop/eslint-config-scoop": "^5.0.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-dependencies": "^2.4.0",
+    "eslint-plugin-implicit-dependencies": "^1.0.4",
+    "mocha": "^6.2.0"
+  },
   "author": "",
   "license": "ISC"
 }
