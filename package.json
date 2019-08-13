@@ -8,11 +8,12 @@
     "start": "node server.js",
     "knexd": "NODE_ENV=development knex",
     "knext": "NODE_ENV=test knex",
+    "knex-migrate": "knex migrate:latest",
     "lint": "eslint .",
     "webpack-watch": "webpack --watch --mode development",
     "webpack-build": "webpack --mode production",
     "watch": "NODE_ENV=development concurrently -p name -n webpack,api,db -c yellow,blue --kill-others 'npm run webpack-watch' 'npm run start' 'docker-compose up'",
-    "heroku-postbuild": "npm run webpack-build; npm run knex -- migrate:latest"
+    "heroku-postbuild": "webpack-build && knex-migrate"
   },
   "dependencies": {
     "@hapi/basic": "^5.1.0",
