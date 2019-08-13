@@ -69,7 +69,6 @@ form.addEventListener('submit', async ev => {
             try {
                 const json = await res.json()
                 message = json.message
-                console.log(message)
             } catch (err) {
                 // no-op
             }
