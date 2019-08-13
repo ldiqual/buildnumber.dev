@@ -19,7 +19,6 @@
     "bluebird": "^3.5.5",
     "bookshelf": "^0.15.1",
     "bookshelf-camelcase": "^2.0.1",
-    "dotenv": "^8.0.0",
     "juice": "^5.2.0",
     "knex": "^0.19.1",
     "lodash": "^4.17.15",
@@ -32,6 +31,7 @@
   "devDependencies": {
     "@scoop/eslint-config-scoop": "^5.0.0",
     "chai": "^4.2.0",
+    "dotenv": "^8.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-dependencies": "^2.4.0",
     "eslint-plugin-implicit-dependencies": "^1.0.4",
