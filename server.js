@@ -190,7 +190,7 @@ const initServer = async() => {
         handler: async(request, h) => {
             
             const appId = request.auth.credentials.appId
-            const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
+            const lastBuild = await Build.forge({ appId }).orderBy('build_number', 'DESC').fetch()
             
             if (!lastBuild) {
                 throw Boom.notFound("Couldn't find a build for this application")
@@ -198,6 +198,37 @@ const initServer = async() => {
             
             const buildNumber = Number(lastBuild.get('buildNumber'))
             const metadata = lastBuild.get('metadata')
+            
+            return {
+                buildNumber,
+                metadata
+            }
+        }
+    })
+    
+    // Get last build
+    addRoute({
+        method: 'GET',
+        path: '/builds/{buildNumber}',
+        options: {
+            auth: 'simple',
+            validate: {
+                params: {
+                    buildNumber: Joi.number().integer().min(1).required()
+                }
+            }
+        },
+        handler: async(request, h) => {
+            
+            const appId = request.auth.credentials.appId
+            const buildNumber = request.params.buildNumber
+            const build = await Build.forge({ appId, buildNumber }).fetch()
+            
+            if (!build) {
+                throw Boom.notFound("Couldn't find a build with this build number")
+            }
+            
+            const metadata = build.get('metadata')
             
             return {
                 buildNumber,
