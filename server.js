@@ -139,6 +139,7 @@ const initServer = async() => {
         }
     })
     
+    // Create new build
     addRoute({
         method: 'POST',
         path: '/builds',
@@ -176,6 +177,32 @@ const initServer = async() => {
                 buildNumber: build.get('buildNumber'),
                 metadata: build.get('metadata')
             }).code(201)
+        }
+    })
+    
+    // Get last build
+    addRoute({
+        method: 'GET',
+        path: '/builds/last',
+        options: {
+            auth: 'simple',
+        },
+        handler: async(request, h) => {
+            
+            const appId = request.auth.credentials.appId
+            const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
+            
+            if (!lastBuild) {
+                throw Boom.notFound("Couldn't find a build for this application")
+            }
+            
+            const buildNumber = Number(lastBuild.get('buildNumber'))
+            const metadata = lastBuild.get('metadata')
+            
+            return {
+                buildNumber,
+                metadata
+            }
         }
     })
 
