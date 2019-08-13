@@ -1,6 +1,6 @@
 'use strict'
 
-var API_URL = window.location.hostname === 'buildnumber.io' ? 'https://api.buildnumber.io' : 'http://localhost:3000/api'
+var API_URL = window.location.hostname === 'buildnumber.dev' ? 'https://api.buildnumber.dev' : 'http://localhost:3000/api'
 
 $().ready( function(){
 

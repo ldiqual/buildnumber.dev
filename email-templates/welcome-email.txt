@@ -1,4 +1,4 @@
-Welcome to buildnumber.io!
+Welcome to buildnumber.dev!
 --------------------------
 
 Your API token is {{ tokenValue }}.
@@ -6,10 +6,10 @@ Your API token is {{ tokenValue }}.
 Request your first build number with the following code:
 
 ```
-$ curl -X POST https://api.buildnumber.io/builds \
+$ curl -X POST https://api.buildnumber.dev/builds \
     --user {{ tokenValue }}:
 ```
 
-To see more examples, please visit https://api.buildnumber.io/?token={{ tokenValue }}#examples.
+To see more examples, please visit https://api.buildnumber.dev/?token={{ tokenValue }}#examples.
 
 Need help? Just reply to this email.

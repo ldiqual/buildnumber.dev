@@ -63,17 +63,27 @@ describe('POST /tokens', async() => {
     it('fails if same email + bundle indentifier was used', async() => {
         
         const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
-        await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        await testUtils.createApp({ bundleIdentifier: 'com.example.myapp1', accountId: account.id })
         
-        const response = await server.inject({
+        const response1 = await server.inject({
             method: 'POST',
             url: '/api/tokens',
             payload: {
                 emailAddress: 'me@example.com',
-                bundleIdentifier: 'com.example.myapp'
+                bundleIdentifier: 'com.example.myapp1'
             }
         })
-        expect(response.statusCode).to.equal(409)
+        expect(response1.statusCode).to.equal(409)
+        
+        const response2 = await server.inject({
+            method: 'POST',
+            url: '/api/tokens',
+            payload: {
+                emailAddress: 'me@example.com',
+                bundleIdentifier: 'com.example.myapp2'
+            }
+        })
+        expect(response2.statusCode).to.equal(201)
     })
     
     it('succeeds with proper email + bundle indentifier', async() => {

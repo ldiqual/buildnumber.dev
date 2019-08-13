@@ -75,7 +75,7 @@ const initServer = async() => {
     
     const addRoute = (params) => {
         server.route({...params, path: `/api${params.path}`})
-        server.route({...params, vhost: 'api.buildnumber.io'})
+        server.route({...params, vhost: 'api.buildnumber.dev'})
     }
     
     // Tokens 1-n Builds
@@ -119,7 +119,7 @@ const initServer = async() => {
             // Token
             const randomString = (await crypto.randomBytes(32)).toString('hex')
             const tokenValue = `${bundleIdentifier}-${randomString}`
-            const token = await Token.forge({
+            await Token.forge({
                 accountId: account.id,
                 appId: app.id,
                 value: tokenValue,
@@ -130,9 +130,9 @@ const initServer = async() => {
             const emailHtmlContent = nunjucks.render('./email-templates/welcome-email-inlined.html', { tokenValue })
             
             const emailData = {
-                from: 'Buildnumber.io <welcome@buildnumber.io>',
+                from: 'buildnumber.dev <welcome@buildnumber.dev>',
                 to: emailAddress,
-                subject: 'Your buildnumber.io API token',
+                subject: 'Your buildnumber.dev API token',
                 text: emailTextContent,
                 html: emailHtmlContent,
             }
