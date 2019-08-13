@@ -8,7 +8,10 @@
     "start": "NODE_ENV=development node server.js",
     "knexd": "NODE_ENV=development knex",
     "knext": "NODE_ENV=test knex",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "webpack-watch": "webpack --watch --mode development",
+    "webpack-build": "webpack --mode production",
+    "watch": "NODE_ENV=development concurrently -p name -n webpack,api,db -c yellow,blue --kill-others 'npm run webpack-watch' 'npm run start' 'docker-compose up'"
   },
   "dependencies": {
     "@hapi/basic": "^5.1.0",
@@ -19,8 +22,10 @@
     "bluebird": "^3.5.5",
     "bookshelf": "^0.15.1",
     "bookshelf-camelcase": "^2.0.1",
+    "jquery": "^3.4.1",
     "juice": "^5.2.0",
     "knex": "^0.19.1",
+    "ladda": "^2.0.1",
     "lodash": "^4.17.15",
     "mailgun-js": "^0.22.0",
     "moment-timezone": "^0.5.26",
@@ -29,13 +34,18 @@
     "require-tree": "^1.1.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@scoop/eslint-config-scoop": "^5.0.0",
+    "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "dotenv": "^8.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-dependencies": "^2.4.0",
     "eslint-plugin-implicit-dependencies": "^1.0.4",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6"
   },
   "author": "",
   "license": "ISC"

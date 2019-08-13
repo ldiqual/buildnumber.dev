@@ -1,29 +1,32 @@
-'use strict'
+const _ = require('lodash')
+const $ = require('jquery')
+const Joi = require('@hapi/joi')
 
-var API_URL = window.location.hostname === 'buildnumber.dev' ? 'https://api.buildnumber.dev' : 'http://localhost:3000/api'
+const API_URL = window.location.hostname === 'buildnumber.dev' ? 'https://api.buildnumber.dev' : 'http://localhost:3000/api'
 
-$().ready( function(){
+$().ready(function() {
 
-    var token = $.url().param('token') || 'API_TOKEN'
+    const token = $.url().param('token') || 'API_TOKEN'
     $('.api-key').text(token)
 
-    var $emailField = $('#email-field')
-    var $bundleIdentifierField = $('#bundle-identifier-field')
-    var $signupButton = $('#signup-button')
-    var $form = $('#signup-form')
-    var $errorContainer = $('#signup-result .result-error')
-    var $successContainer = $('#signup-result .result-success')
+    const $emailField = $('#email-field')
+    const $bundleIdentifierField = $('#bundle-identifier-field')
+    const $signupButton = $('#signup-button')
+    const $form = $('#signup-form')
+    const $errorContainer = $('#signup-result .result-error')
+    const $successContainer = $('#signup-result .result-success')
 
     $signupButton.ladda()
 
     $form.submit(function(ev) {
         ev.preventDefault()
-        var emailAddress = $emailField.val()
-        var bundleIdentifier = $bundleIdentifierField.val()
-
-        var regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-        if (!regex.test(emailAddress)) {
-            $errorContainer.text("Please enter a valid email address")
+        const emailAddress = $emailField.val()
+        const bundleIdentifier = $bundleIdentifierField.val()
+        
+        try {
+            Joi.assert(emailAddress, Joi.string().email().required())
+        } catch (err) {
+            $errorContainer.text('Please enter a valid email address')
             $errorContainer.slideDown(300)
             return
         }
@@ -38,12 +41,11 @@ $().ready( function(){
             contentType: 'application/json',
             data: JSON.stringify({ emailAddress, bundleIdentifier })
         }).success(function(data) {
-            var msg = "Your API token has been sent to " + emailAddress + ".<br>" +
-                "Check your emails!"
+            const msg = `Your API token has been sent to ${emailAddress}<br>Check your emails!`
             $successContainer.html(msg)
             $successContainer.slideDown(300)
         }).error(function(err) {
-            var errorText = _.get(err, 'responseJSON.error', 'Something went wrong, please try again!')
+            const errorText = _.get(err, 'responseJSON.error', 'Something went wrong, please try again!')
             $errorContainer.text(errorText)
             $errorContainer.slideDown(300)
         }).always(function() {
@@ -52,4 +54,4 @@ $().ready( function(){
             $signupButton.ladda('stop')
         })
     })
-});
+})
