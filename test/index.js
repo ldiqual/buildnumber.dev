@@ -42,7 +42,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                emailAddress: 'me@example.com',
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
             }
         })
         expect(response.statusCode).to.equal(400)
@@ -53,7 +53,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                emailAddress: 'me@example.com',
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
                 bundleIdentifier: 'aa'
             }
         })
@@ -62,14 +62,14 @@ describe('POST /tokens', async() => {
     
     it('fails if same email + bundle indentifier was used', async() => {
         
-        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         await testUtils.createApp({ bundleIdentifier: 'com.example.myapp1', accountId: account.id })
         
         const response1 = await server.inject({
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                emailAddress: 'me@example.com',
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
                 bundleIdentifier: 'com.example.myapp1'
             }
         })
@@ -79,7 +79,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                emailAddress: 'me@example.com',
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
                 bundleIdentifier: 'com.example.myapp2'
             }
         })
@@ -91,7 +91,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                emailAddress: 'me@example.com',
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
                 bundleIdentifier: 'com.example.myapp'
             }
         })
@@ -122,7 +122,7 @@ describe('POST /builds', async() => {
     
     it('succeeds if valid token provided', async() => {
         
-        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
         
@@ -144,7 +144,7 @@ describe('POST /builds', async() => {
     
     it('is sequential', async() => {
         
-        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
         const build = await testUtils.createBuild({ appId: app.id, buildNumber: 10 })
@@ -166,7 +166,7 @@ describe('POST /builds', async() => {
     
     it('allows providing metadata', async() => {
         
-        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
         

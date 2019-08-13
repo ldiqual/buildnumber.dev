@@ -136,7 +136,6 @@ const initServer = async() => {
                 text: emailTextContent,
                 html: emailHtmlContent,
             }
-             
             await mailgun.messages().send(emailData)
             
             return h.response({}).code(201)
