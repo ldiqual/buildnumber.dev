@@ -147,7 +147,7 @@ describe('POST /builds', async() => {
         const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
-        const build = await testUtils.createBuild({ appId: app.id, buildNumber: 10 })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10 })
         
         const response = await server.inject({
             method: 'POST',
@@ -159,7 +159,7 @@ describe('POST /builds', async() => {
         })
         expect(response.statusCode).to.equal(201)
         expect(response.result).to.deep.equal({
-            buildNumber: build.get('buildNumber') + 1,
+            buildNumber: 11,
             metadata: {}
         })
     })
@@ -189,6 +189,42 @@ describe('POST /builds', async() => {
                 head: 'abcdef'
             }
         })
+    })
+    
+    it('outputs the build number directly when asked', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds?output=buildNumber',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(201)
+        expect(response.result).to.equal('1')
+    })
+    
+    it('rejects invalid output query params', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds?output=metadata',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(400)
     })
 })
 
@@ -301,6 +337,43 @@ describe('GET /builds/last', async() => {
             metadata: {}
         })
     })
+    
+    it('outputs the build number directly when asked', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'GET',
+            url: '/api/builds/last?output=buildNumber',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(200)
+        expect(response.result).to.equal('10')
+    })
+    
+    it('rejects invalid output query params', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'GET',
+            url: '/api/builds/last?output=metadata',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(400)
+    })
 })
 
 describe('GET /builds/{buildNumber}', async() => {
@@ -388,5 +461,42 @@ describe('GET /builds/{buildNumber}', async() => {
             buildNumber: 10,
             metadata: { head: 'abcdef' }
         })
+    })
+    
+    it('outputs the build number directly when asked', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'GET',
+            url: '/api/builds/10?output=buildNumber',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(200)
+        expect(response.result).to.equal('10')
+    })
+    
+    it('rejects invalid output query params', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'GET',
+            url: '/api/builds/10?output=metadata',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {}
+        })
+        
+        expect(response.statusCode).to.equal(400)
     })
 })

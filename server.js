@@ -148,6 +148,9 @@ const initServer = async() => {
             validate: {
                 payload: {
                     metadata: Joi.object().optional()
+                },
+                query: {
+                    output: Joi.string().valid('buildNumber').optional()
                 }
             }
         },
@@ -155,6 +158,7 @@ const initServer = async() => {
             
             const appId = request.auth.credentials.appId
             const metadata = request.payload.metadata || {}
+            const outputBuildNumber = request.query.output === 'buildNumber'
             const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
             
             let build = null
@@ -173,9 +177,16 @@ const initServer = async() => {
                 }).save()
             }
             
+            const buildNumberFromBuild = Number(build.get('buildNumber'))
+            const metadataFromBuild = build.get('metadata')
+            
+            if (outputBuildNumber) {
+                return h.response(String(buildNumberFromBuild)).code(201)
+            }
+            
             return h.response({
-                buildNumber: build.get('buildNumber'),
-                metadata: build.get('metadata')
+                buildNumber: buildNumberFromBuild,
+                metadata: metadataFromBuild
             }).code(201)
         }
     })
@@ -186,10 +197,16 @@ const initServer = async() => {
         path: '/builds/last',
         options: {
             auth: 'simple',
+            validate: {
+                query: {
+                    output: Joi.string().valid('buildNumber').optional()
+                }
+            }
         },
         handler: async(request, h) => {
             
             const appId = request.auth.credentials.appId
+            const outputBuildNumber = request.query.output === 'buildNumber'
             const lastBuild = await Build.forge({ appId }).orderBy('build_number', 'DESC').fetch()
             
             if (!lastBuild) {
@@ -198,6 +215,10 @@ const initServer = async() => {
             
             const buildNumber = Number(lastBuild.get('buildNumber'))
             const metadata = lastBuild.get('metadata')
+            
+            if (outputBuildNumber) {
+                return String(buildNumber)
+            }
             
             return {
                 buildNumber,
@@ -215,6 +236,9 @@ const initServer = async() => {
             validate: {
                 params: {
                     buildNumber: Joi.number().integer().min(1).required()
+                },
+                query: {
+                    output: Joi.string().valid('buildNumber').optional()
                 }
             }
         },
@@ -222,6 +246,7 @@ const initServer = async() => {
             
             const appId = request.auth.credentials.appId
             const buildNumber = request.params.buildNumber
+            const outputBuildNumber = request.query.output === 'buildNumber'
             const build = await Build.forge({ appId, buildNumber }).fetch()
             
             if (!build) {
@@ -229,6 +254,10 @@ const initServer = async() => {
             }
             
             const metadata = build.get('metadata')
+            
+            if (outputBuildNumber) {
+                return String(buildNumber)
+            }
             
             return {
                 buildNumber,
