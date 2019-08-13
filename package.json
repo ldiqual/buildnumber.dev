@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node server.js",
-    "knexd": "NODE_ENV=development knex"
+    "test": "NODE_ENV=test mocha",
+    "start": "NODE_ENV=development node server.js",
+    "knexd": "NODE_ENV=development knex",
+    "knext": "NODE_ENV=test knex"
   },
   "dependencies": {
     "@hapi/boom": "^7.4.2",

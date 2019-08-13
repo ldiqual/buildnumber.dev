@@ -91,6 +91,8 @@ const initServer = async() => {
                 value: tokenValue,
             }).save()
             
+            // TODO: send email
+            
             return h.response({}).code(201)
         }
     })
