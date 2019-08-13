@@ -55,7 +55,7 @@ a {
     text-align:center;
 }
 
-#email-field, #app-identifier {
+#email-field, #bundle-identifier-field {
     border-width: 0;
     border-radius: 8px;
     background-color: white;
