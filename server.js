@@ -8,14 +8,22 @@ const Hapi = require('@hapi/hapi')
 const hapiBasic = require('@hapi/basic')
 const inert = require('@hapi/inert')
 const Joi = require('@hapi/joi')
+const Mailgun = require('mailgun-js')
 const moment = require('moment-timezone')
+const nunjucks = require('nunjucks')
 const path = require('path')
 
+const config = require('./lib/config')
 const bookshelf = require('./lib/bookshelf')
 const Account = bookshelf.model('Account')
 const App = bookshelf.model('App')
 const Token = bookshelf.model('Token')
 const Build = bookshelf.model('Build')
+
+const mailgun = Mailgun({
+    apiKey: config.mailgun.secretApiKey,
+    domain: config.mailgun.domain
+})
 
 // Token value is the basic auth username
 const validateToken = async (request, tokenValue, password, h) => {
@@ -93,17 +101,20 @@ const initServer = async() => {
             }
             
             // App
-            const app = await App.forge({
-                accountId: account.id,
-                bundleIdentifier
-            })
+            const similarAppsCount = await App.where({
+                account_id: account.id,
+                bundle_identifier: bundleIdentifier
+            }).count()
             
             // Ensure bundle identifier is unique for this account
-            if (await app.count() > 0) {
+            if (similarAppsCount > 0) {
                 throw Boom.conflict('There is already an app with the same bundle identifier for this account')
             }
             
-            await app.save()
+            const app = await App.forge({
+                accountId: account.id,
+                bundleIdentifier
+            }).save()
             
             // Token
             const randomString = (await crypto.randomBytes(32)).toString('hex')
@@ -114,7 +125,19 @@ const initServer = async() => {
                 value: tokenValue,
             }).save()
             
-            // TODO: send email
+            // Email templates
+            const emailTextContent = nunjucks.render('./email-templates/welcome-email.txt', { tokenValue })
+            const emailHtmlContent = nunjucks.render('./email-templates/welcome-email-inlined.html', { tokenValue })
+            
+            const emailData = {
+                from: 'Buildnumber.io <welcome@buildnumber.io>',
+                to: emailAddress,
+                subject: 'Your buildnumber.io API token',
+                text: emailTextContent,
+                html: emailHtmlContent,
+            }
+             
+            await mailgun.messages().send(emailData)
             
             return h.response({}).code(201)
         }
