@@ -64,18 +64,26 @@ form.addEventListener('submit', async ev => {
         },
         body: JSON.stringify({ emailAddress, bundleIdentifier })
     })
-    .then(res => {
+    .then(async res => {
         if (!res.ok) {
-            throw new Error(res.statusText)
+            let message = null
+            try {
+                const json = await res.json()
+                message = json.message
+                console.log(message)
+            } catch (err) {
+                // no-op
+            }
+            throw new Error(message || 'Something went wrong, please try again!')
         }
+        return res
     })
-    .then(() => {
+    .then(res => {
         const msg = `Your API token has been sent to ${emailAddress}<br>Check your emails!`
         showSuccess(msg)
     })
     .catch(err => {
-        const errorText = _.get(err, 'responseJSON.error', 'Something went wrong, please try again!')
-        showError(errorText)
+        showError(err.message)
     })
     .finally(() => {
         emailField.disabled = false
