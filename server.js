@@ -15,6 +15,7 @@ const bookshelf = require('./lib/bookshelf')
 const Account = bookshelf.model('Account')
 const App = bookshelf.model('App')
 const Token = bookshelf.model('Token')
+const Build = bookshelf.model('Build')
 
 // Token value is the basic auth username
 const validateToken = async (request, tokenValue, password, h) => {
@@ -27,13 +28,15 @@ const validateToken = async (request, tokenValue, password, h) => {
     }
     
     // Fetch token with same value
-    const token = await Token.forge({ value: tokenValue }).fetch({ withRelated: 'account' })
+    const token = await Token.forge({ value: tokenValue }).fetch({ withRelated: ['account', 'app'] })
     if (token === null) {
         return { credentials: null, isValid: false }
     }
 
     const account = token.related('account')
-    const credentials = { id: account.id }
+    const app = token.related('app')
+    
+    const credentials = { accountId: account.id, appId: app.id }
 
     return { isValid: true, credentials }
 }
@@ -122,9 +125,38 @@ const initServer = async() => {
         path: '/builds',
         options: {
             auth: 'simple',
+            validate: {
+                payload: {
+                    metadata: Joi.object().optional()
+                }
+            }
         },
         handler: async(request, h) => {
-            return h.response({}).code(201)
+            
+            const appId = request.auth.credentials.appId
+            const metadata = request.payload.metadata || {}
+            const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
+            
+            let build = null
+            if (lastBuild) {
+                const buildNumber = Number(lastBuild.get('buildNumber')) + 1
+                build = await Build.forge({
+                    appId,
+                    buildNumber,
+                    metadata
+                }).save()
+            } else {
+                build = await Build.forge({
+                    appId,
+                    buildNumber: 1,
+                    metadata
+                }).save()
+            }
+            
+            return h.response({
+                buildNumber: build.get('buildNumber'),
+                metadata: build.get('metadata')
+            }).code(201)
         }
     })
 

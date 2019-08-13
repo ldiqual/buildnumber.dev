@@ -110,21 +110,26 @@ describe('POST /builds', async() => {
         expect(response.statusCode).to.equal(401)
     })
     
-    it('succeeds if valid token provided, and is sequential', async() => {
+    it('succeeds if valid token provided', async() => {
         
         const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
         const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
         
-        const response1 = await server.inject({
+        const response = await server.inject({
             method: 'POST',
             url: '/api/builds',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
             },
+            payload: {}
         })
-        expect(response1.statusCode).to.equal(201)
-        expect(response1.payload).to.equal({ buildNumber: 1 })
+        
+        expect(response.statusCode).to.equal(201)
+        expect(response.result).to.deep.equal({
+            buildNumber: 1,
+            metadata: {}
+        })
     })
     
     it('is sequential', async() => {
@@ -140,9 +145,13 @@ describe('POST /builds', async() => {
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
             },
+            payload: {}
         })
         expect(response.statusCode).to.equal(201)
-        expect(response.payload).to.equal({ buildNumber: build.get('buildNumber') + 1 })
+        expect(response.result).to.deep.equal({
+            buildNumber: build.get('buildNumber') + 1,
+            metadata: {}
+        })
     })
     
     it('allows providing metadata', async() => {
@@ -158,10 +167,17 @@ describe('POST /builds', async() => {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
             },
             payload: {
-                head: 'abcdef'
+                metadata: {
+                    head: 'abcdef'
+                }
             }
         })
         expect(response.statusCode).to.equal(201)
-        expect(response.payload).to.equal({ buildNumber: 1, head: 'abcdef' })
+        expect(response.result).to.deep.equal({
+            buildNumber: 1,
+            metadata: {
+                head: 'abcdef'
+            }
+        })
     })
 })
