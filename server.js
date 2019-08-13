@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
+const Boom = require('@hapi/boom')
 const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
 const Hapi = require('@hapi/hapi')
@@ -53,27 +54,42 @@ const initServer = async() => {
         options: {
             validate: {
                 payload: {
-                    email: Joi.string().email().required(),
+                    emailAddress: Joi.string().email().required(),
                     bundleIdentifier: Joi.string().min(3).required()
                 }
             }
         },
         handler: async(request, h) => {
             
-            const email = request.payload.email
-            const bundleIdentifier = request.payload.bundleIdentifier
+            const emailAddress = request.payload.emailAddress.toLowerCase()
+            const bundleIdentifier = request.payload.bundleIdentifier.toLowerCase()
             
-            await bookshelf.transaction(async txn => {
-                const account = await Account.forge({ email_address: email }).save(null, { transacting: txn })
-                const app = await App.forge({ account_id: account.id, bundle_identifier: bundleIdentifier }).save(null, { transacting: txn })
-                const randomString = (await crypto.randomBytes(32)).toString('hex')
-                const tokenValue = `${bundleIdentifier}-${randomString}`
-                const token = await Token.forge({
-                    account_id: account.id,
-                    app_id: app.id,
-                    value: tokenValue,
-                }).save(null, { transacting: txn })
+            let account = await Account.forge({ emailAddress }).fetch()
+            if (!account) {
+                account = await Account.forge({ emailAddress }).save()
+            }
+            
+            // App
+            const app = await App.forge({
+                accountId: account.id,
+                bundleIdentifier
             })
+            
+            // Ensure bundle identifier is unique for this account
+            if (await app.count() > 0) {
+                throw Boom.conflict('There is already an app with the same bundle identifier for this account')
+            }
+            
+            await app.save()
+            
+            // Token
+            const randomString = (await crypto.randomBytes(32)).toString('hex')
+            const tokenValue = `${bundleIdentifier}-${randomString}`
+            const token = await Token.forge({
+                accountId: account.id,
+                appId: app.id,
+                value: tokenValue,
+            }).save()
             
             return h.response({}).code(201)
         }

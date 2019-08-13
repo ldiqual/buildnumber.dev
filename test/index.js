@@ -9,7 +9,7 @@ before(async() => {
     server = await initServer()
 })
 
-afterEach(async() => {
+beforeEach(async() => {
     await testUtils.resetDatabase()
 })
 
@@ -30,7 +30,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                email: 'invalidemail',
+                emailAddress: 'invalidemail',
                 bundleIdentifier: 'com.example.myapp'
             }
         })
@@ -42,7 +42,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                email: 'me@example.com',
+                emailAddress: 'me@example.com',
             }
         })
         expect(response.statusCode).to.equal(400)
@@ -53,7 +53,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                email: 'me@example.com',
+                emailAddress: 'me@example.com',
                 bundleIdentifier: 'aa'
             }
         })
@@ -62,14 +62,14 @@ describe('POST /tokens', async() => {
     
     it('fails if same email + bundle indentifier was used', async() => {
         
-        await testUtils.createAccount({ email_address: 'me@example.com' })
-        await testUtils.createApp({ bundle_identifier: 'com.example.myapp' })
+        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
         
         const response = await server.inject({
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                email: 'me@example.com',
+                emailAddress: 'me@example.com',
                 bundleIdentifier: 'com.example.myapp'
             }
         })
@@ -81,7 +81,7 @@ describe('POST /tokens', async() => {
             method: 'POST',
             url: '/api/tokens',
             payload: {
-                email: 'me@example.com',
+                emailAddress: 'me@example.com',
                 bundleIdentifier: 'com.example.myapp'
             }
         })
