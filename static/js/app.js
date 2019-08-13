@@ -1,22 +1,25 @@
 const _ = require('lodash')
 const $ = require('jquery')
 const Joi = require('@hapi/joi')
+const ladda = require('ladda')
+
+require('ladda/dist/ladda.min.css')
 
 const API_URL = window.location.hostname === 'buildnumber.dev' ? 'https://api.buildnumber.dev' : 'http://localhost:3000/api'
 
 $().ready(function() {
 
-    const token = $.url().param('token') || 'API_TOKEN'
+    const windowUrl = new URL(window.location.href)
+    const token = windowUrl.searchParams.get('token') || 'API_TOKEN'
     $('.api-key').text(token)
 
     const $emailField = $('#email-field')
     const $bundleIdentifierField = $('#bundle-identifier-field')
-    const $signupButton = $('#signup-button')
+    const signupButton = document.querySelector('#signup-button')
+    const signupButtonLadda = ladda.create(signupButton)
     const $form = $('#signup-form')
     const $errorContainer = $('#signup-result .result-error')
     const $successContainer = $('#signup-result .result-success')
-
-    $signupButton.ladda()
 
     $form.submit(function(ev) {
         ev.preventDefault()
@@ -32,7 +35,7 @@ $().ready(function() {
         }
 
         $emailField.prop('disabled', true)
-        $signupButton.ladda('start')
+        signupButtonLadda.start()
         $errorContainer.slideUp(300)
         $successContainer.slideUp(300)
 
@@ -51,7 +54,7 @@ $().ready(function() {
         }).always(function() {
             $emailField.prop('disabled', false)
             $bundleIdentifierField.prop('disabled', false)
-            $signupButton.ladda('stop')
+            signupButtonLadda.stop()
         })
     })
 })
