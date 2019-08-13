@@ -1,6 +1,5 @@
 'use strict'
 
-const _ = require('lodash')
 const Boom = require('@hapi/boom')
 const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
@@ -8,8 +7,7 @@ const Hapi = require('@hapi/hapi')
 const hapiBasic = require('@hapi/basic')
 const inert = require('@hapi/inert')
 const Joi = require('@hapi/joi')
-const Mailgun = require('mailgun-js')
-const moment = require('moment-timezone')
+const mailgunApi = require('mailgun-js')
 const nunjucks = require('nunjucks')
 const path = require('path')
 
@@ -20,13 +18,13 @@ const App = bookshelf.model('App')
 const Token = bookshelf.model('Token')
 const Build = bookshelf.model('Build')
 
-const mailgun = Mailgun({
+const mailgun = mailgunApi({
     apiKey: config.mailgun.secretApiKey,
     domain: config.mailgun.domain
 })
 
 // Token value is the basic auth username
-const validateToken = async (request, tokenValue, password, h) => {
+const validateToken = async(request, tokenValue, password, h) => {
     
     // Ensure token is of appropriate length
     try {
@@ -49,7 +47,6 @@ const validateToken = async (request, tokenValue, password, h) => {
     return { isValid: true, credentials }
 }
 
-
 const initServer = async() => {
 
     const server = new Hapi.Server({
@@ -60,7 +57,7 @@ const initServer = async() => {
 
     await server.register(inert)
     await server.register(hapiBasic)
-    server.auth.strategy('simple', 'basic', { validate: validateToken });
+    server.auth.strategy('simple', 'basic', { validate: validateToken })
 
     server.route({
         method: 'GET',
@@ -74,8 +71,8 @@ const initServer = async() => {
     })
     
     const addRoute = (params) => {
-        server.route({...params, path: `/api${params.path}`})
-        server.route({...params, vhost: 'api.buildnumber.dev'})
+        server.route({ ...params, path: `/api${params.path}` })
+        server.route({ ...params, vhost: 'api.buildnumber.dev' })
     }
     
     // Tokens 1-n Builds
@@ -102,8 +99,8 @@ const initServer = async() => {
             
             // App
             const similarAppsCount = await App.where({
-                account_id: account.id,
-                bundle_identifier: bundleIdentifier
+                'account_id': account.id,
+                'bundle_identifier': bundleIdentifier
             }).count()
             
             // Ensure bundle identifier is unique for this account
