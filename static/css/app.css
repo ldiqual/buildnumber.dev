@@ -101,24 +101,41 @@ a {
 
 #signup-result {
     width:100%;
+    overflow-y: hidden;
+  	max-height: 500px; /* approximate max height */
+
+  	transition-property: all;
+  	transition-duration: .5s;
+  	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+#signup-result.closed {
+    max-height: 0;
 }
 
 #signup-result .result {
     border-radius:8px;
     padding:20px 30px;
     margin: 50px auto 0 auto;
-    font-size:20px;
-    text-align:center;
-    width:545px;
-    display:none;
+    font-size: 20px;
+    text-align: center;
+    width: 545px;
 }
 
 #signup-result .result-error {
     background: #E71D36;
 }
 
+#signup-result .result-error.hidden {
+    display: none;
+}
+
 #signup-result .result-success {
     background: #2EC4B6;
+}
+
+#signup-result .result-success.hidden {
+    display: none;
 }
 
 #console {
