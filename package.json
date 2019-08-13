@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
-    "start": "NODE_ENV=development node server.js",
+    "start": "node server.js",
     "knexd": "NODE_ENV=development knex",
     "knext": "NODE_ENV=test knex",
     "lint": "eslint .",
