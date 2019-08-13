@@ -3,7 +3,10 @@ const ladda = require('ladda')
 
 require('ladda/dist/ladda.min.css')
 
-const API_URL = window.location.hostname === 'buildnumber.dev' ? 'https://api.buildnumber.dev' : 'http://localhost:3000/api'
+let API_URL = 'https://api.buildnumber.dev'
+if (window.location.hostname !== 'buildnumber.dev') {
+    API_URL = `//${window.location.host}/api`
+}
 
 const windowUrl = new URL(window.location.href)
 const token = windowUrl.searchParams.get('token') || 'API_TOKEN'
