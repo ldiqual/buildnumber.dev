@@ -10,6 +10,7 @@
     "knext": "NODE_ENV=test knex"
   },
   "dependencies": {
+    "@hapi/basic": "^5.1.0",
     "@hapi/boom": "^7.4.2",
     "@hapi/hapi": "^18.3.1",
     "@hapi/inert": "^5.2.1",

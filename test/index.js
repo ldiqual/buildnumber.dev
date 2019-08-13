@@ -88,3 +88,52 @@ describe('POST /tokens', async() => {
         expect(response.statusCode).to.equal(201)
     })
 })
+
+describe('POST /builds', async() => {
+    it('fails if no token provided', async() => {
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: { authorization: '' },
+        })
+        expect(response.statusCode).to.equal(401)
+    })
+    
+    it('fails if invalid token provided', async() => {
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue('does-not-exist-but-is-long-enough')
+            },
+        })
+        expect(response.statusCode).to.equal(401)
+    })
+    
+    it('succeeds if valid token provided, and is sequential', async() => {
+        
+        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        
+        const response1 = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+        })
+        expect(response1.statusCode).to.equal(201)
+        expect(response1.payload).to.equal({ buildNumber: 1 })
+        
+        const response2 = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+        })
+        expect(response2.statusCode).to.equal(201)
+        expect(response2.payload).to.equal({ buildNumber: 2 })
+    })
+})

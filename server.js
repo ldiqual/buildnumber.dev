@@ -5,6 +5,7 @@ const Boom = require('@hapi/boom')
 const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
 const Hapi = require('@hapi/hapi')
+const hapiBasic = require('@hapi/basic')
 const inert = require('@hapi/inert')
 const Joi = require('@hapi/joi')
 const moment = require('moment-timezone')
@@ -15,11 +16,28 @@ const Account = bookshelf.model('Account')
 const App = bookshelf.model('App')
 const Token = bookshelf.model('Token')
 
-const user = {
-    id: 'gusty',
-    name: 'gusty',
-    password: 'gusty'
+// Token value is the basic auth username
+const validateToken = async (request, tokenValue, password, h) => {
+    
+    // Ensure token is of appropriate length
+    try {
+        Joi.assert(tokenValue, Joi.string().min(32).required())
+    } catch (err) {
+        return { credentials: null, isValid: false }
+    }
+    
+    // Fetch token with same value
+    const token = await Token.forge({ value: tokenValue }).fetch({ withRelated: 'account' })
+    if (token === null) {
+        return { credentials: null, isValid: false }
+    }
+
+    const account = token.related('account')
+    const credentials = { id: account.id }
+
+    return { isValid: true, credentials }
 }
+
 
 const initServer = async() => {
 
@@ -30,6 +48,8 @@ const initServer = async() => {
     })
 
     await server.register(inert)
+    await server.register(hapiBasic)
+    server.auth.strategy('simple', 'basic', { validate: validateToken });
 
     server.route({
         method: 'GET',
@@ -100,8 +120,11 @@ const initServer = async() => {
     addRoute({
         method: 'POST',
         path: '/builds',
+        options: {
+            auth: 'simple',
+        },
         handler: async(request, h) => {
-            return {}
+            return h.response({}).code(201)
         }
     })
 
