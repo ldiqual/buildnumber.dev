@@ -125,15 +125,43 @@ describe('POST /builds', async() => {
         })
         expect(response1.statusCode).to.equal(201)
         expect(response1.payload).to.equal({ buildNumber: 1 })
+    })
+    
+    it('is sequential', async() => {
         
-        const response2 = await server.inject({
+        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        const build = await testUtils.createBuild({ appId: app.id, buildNumber: 10 })
+        
+        const response = await server.inject({
             method: 'POST',
             url: '/api/builds',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
             },
         })
-        expect(response2.statusCode).to.equal(201)
-        expect(response2.payload).to.equal({ buildNumber: 2 })
+        expect(response.statusCode).to.equal(201)
+        expect(response.payload).to.equal({ buildNumber: build.get('buildNumber') + 1 })
+    })
+    
+    it('allows providing metadata', async() => {
+        
+        const account = await testUtils.createAccount({ emailAddress: 'me@example.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: {
+                head: 'abcdef'
+            }
+        })
+        expect(response.statusCode).to.equal(201)
+        expect(response.payload).to.equal({ buildNumber: 1, head: 'abcdef' })
     })
 })
