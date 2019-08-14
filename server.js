@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const Boom = require('@hapi/boom')
 const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
@@ -190,9 +191,9 @@ const initServer = async() => {
         options: {
             auth: 'simple',
             validate: {
-                payload: {
+                payload: Joi.object({
                     metadata: Joi.object().optional()
-                },
+                }).allow(null),
                 query: {
                     output: Joi.string().valid('buildNumber').optional()
                 }
@@ -201,7 +202,7 @@ const initServer = async() => {
         handler: async(request, h) => {
             
             const appId = request.auth.credentials.appId
-            const metadata = request.payload.metadata || {}
+            const metadata = _.get(request.payload, 'metadata', {})
             const outputBuildNumber = request.query.output === 'buildNumber'
             const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
             

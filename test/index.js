@@ -255,6 +255,24 @@ describe('POST /builds', async() => {
         
         expect(response.statusCode).to.equal(400)
     })
+    
+    it('accepts an empty payload', async() => {
+        const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
+        const app = await testUtils.createApp({ bundleIdentifier: 'com.example.myapp', accountId: account.id })
+        const token = await testUtils.createToken({ appId: app.id, accountId: account.id })
+        await testUtils.createBuild({ appId: app.id, buildNumber: 10, metadata: { head: 'abcdef' }})
+        
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/builds',
+            headers: {
+                authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
+            },
+            payload: null
+        })
+        
+        expect(response.statusCode).to.equal(201)
+    })
 })
 
 describe('GET /builds/last', async() => {
@@ -289,8 +307,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(404)
@@ -308,8 +325,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -331,8 +347,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -356,8 +371,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -378,8 +392,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last?output=buildNumber',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -397,8 +410,7 @@ describe('GET /builds/last', async() => {
             url: '/api/builds/last?output=metadata',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(400)
@@ -439,8 +451,7 @@ describe('GET /builds/{buildNumber}', async() => {
             url: '/api/builds/10',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(404)
@@ -458,8 +469,7 @@ describe('GET /builds/{buildNumber}', async() => {
             url: '/api/builds/10',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -481,8 +491,7 @@ describe('GET /builds/{buildNumber}', async() => {
             url: '/api/builds/10',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -503,8 +512,7 @@ describe('GET /builds/{buildNumber}', async() => {
             url: '/api/builds/10?output=buildNumber',
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
-            },
-            payload: {}
+            }
         })
         
         expect(response.statusCode).to.equal(200)
@@ -523,7 +531,6 @@ describe('GET /builds/{buildNumber}', async() => {
             headers: {
                 authorization: testUtils.getAuthHeaderForTokenValue(token.get('value'))
             },
-            payload: {}
         })
         
         expect(response.statusCode).to.equal(400)
