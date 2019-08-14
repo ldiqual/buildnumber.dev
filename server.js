@@ -71,8 +71,21 @@ const initServer = async() => {
     })
     
     const addRoute = (params) => {
-        server.route({ ...params, path: `/api${params.path}` })
-        server.route({ ...params, vhost: 'api.buildnumber.dev' })
+        
+        // http://localhost/api/
+        server.route({
+            ...params,
+            path: `/api${params.path}`
+        })
+        
+        // https://api.buildnumber.dev
+        server.route({
+            ...params,
+            cors: {
+                origin: ['www.buildnumber.dev']
+            },
+            vhost: 'api.buildnumber.dev'
+        })
     }
     
     // Tokens 1-n Builds
