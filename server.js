@@ -5,6 +5,7 @@ const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
 const Hapi = require('@hapi/hapi')
 const hapiBasic = require('@hapi/basic')
+const hapiRequireHttps = require('hapi-require-https')
 const inert = require('@hapi/inert')
 const Joi = require('@hapi/joi')
 const mailgunApi = require('mailgun-js')
@@ -57,6 +58,7 @@ const initServer = async() => {
         }
     })
 
+    await server.register(hapiRequireHttps)
     await server.register(inert)
     await server.register(hapiBasic)
     server.auth.strategy('simple', 'basic', { validate: validateToken })

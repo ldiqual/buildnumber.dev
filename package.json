@@ -24,6 +24,7 @@
     "bluebird": "^3.5.5",
     "bookshelf": "^0.15.1",
     "bookshelf-camelcase": "^2.0.1",
+    "hapi-require-https": "^3.0.1",
     "juice": "^5.2.0",
     "knex": "^0.19.1",
     "ladda": "^2.0.1",
