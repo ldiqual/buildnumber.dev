@@ -9,6 +9,11 @@ before(async() => {
     server = await initServer()
 })
 
+// Would love this to be automatic :(
+after(async() => {
+    await testUtils.closeDatabaseConnection()
+})
+
 beforeEach(async() => {
     await testUtils.resetDatabase()
 })
