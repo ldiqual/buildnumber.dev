@@ -9,9 +9,10 @@
     "knexd": "NODE_ENV=development knex",
     "knext": "NODE_ENV=test knex",
     "lint": "eslint .",
+    "node-watch": "NODE_ENV=development nodemon server.js",
     "webpack-watch": "webpack --watch --mode development",
     "webpack-build": "webpack --mode production",
-    "watch": "NODE_ENV=development concurrently -p name -n webpack,api,db -c yellow,blue --kill-others 'npm run webpack-watch' 'npm run start' 'docker-compose up'",
+    "watch": "NODE_ENV=development concurrently -p name -n webpack,api,db -c yellow,blue --kill-others 'npm run webpack-watch' 'npm run node-watch' 'docker-compose up'",
     "heroku-postbuild": "npm run webpack-build && knex migrate:latest"
   },
   "dependencies": {

@@ -84,7 +84,7 @@ const initServer = async() => {
             options: {
                 ...(params.options || {}),
                 cors: {
-                    origin: ['www.buildnumber.dev']
+                    origin: ['https://www.buildnumber.dev']
                 }
             },
             vhost: 'api.buildnumber.dev'

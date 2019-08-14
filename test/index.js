@@ -505,3 +505,29 @@ describe('GET /builds/{buildNumber}', async() => {
         expect(response.statusCode).to.equal(400)
     })
 })
+
+describe('CORS in production', async() => {
+    it('allows www.buildnumber.dev to query api.buildnumber.dev', async() => {
+        
+        async function validateEndpoint({ method, endpoint }) {
+            const response = await server.inject({
+                method: 'OPTIONS',
+                url: endpoint,
+                headers: {
+                    'Host': 'api.buildnumber.dev',
+                    'Access-Control-Request-Method': method,
+                    'Origin': 'https://www.buildnumber.dev',
+                }
+            })
+            
+            expect(response.headers['access-control-allow-origin']).to.equal('https://www.buildnumber.dev')
+            expect(response.headers['access-control-allow-methods']).to.equal(method)
+            expect(response.headers).to.contain.key('access-control-allow-headers')
+        }
+                
+        await validateEndpoint({ method: 'POST', endpoint: '/tokens' })
+        await validateEndpoint({ method: 'POST', endpoint: '/builds' })
+        await validateEndpoint({ method: 'GET', endpoint: '/builds/last' })
+        await validateEndpoint({ method: 'GET', endpoint: '/builds/10' })
+    })
+})
