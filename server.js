@@ -28,7 +28,7 @@ const validateToken = async(request, tokenValue, password, h) => {
     
     // Ensure token is of appropriate length
     try {
-        Joi.assert(tokenValue, Joi.string().min(32).required())
+        Joi.assert(tokenValue, Joi.string().length(16).required())
     } catch (err) {
         return { credentials: null, isValid: false }
     }
@@ -114,7 +114,7 @@ const initServer = async() => {
             }).save()
             
             // Token
-            const tokenValue = (await crypto.randomBytes(32)).toString('hex').substring(0, 15)
+            const tokenValue = (await crypto.randomBytes(32)).toString('hex').substring(0, 16)
             await Token.forge({
                 accountId: account.id,
                 appId: app.id,

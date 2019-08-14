@@ -114,7 +114,7 @@ describe('POST /builds', async() => {
             method: 'POST',
             url: '/api/builds',
             headers: {
-                authorization: testUtils.getAuthHeaderForTokenValue('does-not-exist-but-is-long-enough')
+                authorization: testUtils.getAuthHeaderForTokenValue('does-not-exist--')
             },
         })
         expect(response.statusCode).to.equal(401)
