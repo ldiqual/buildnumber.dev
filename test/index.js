@@ -601,4 +601,17 @@ describe('the routing system', async() => {
         })
         expect(apiResponse.statusCode).to.equal(200)
     })
+    
+    it('redirects root requests to www', async() => {
+        
+        const response = await server.inject({
+            method: 'GET',
+            url: '/index.html',
+            headers: {
+                'Host': 'buildnumber.dev',
+            }
+        })
+        expect(response.statusCode).to.equal(301)
+        expect(response.headers.location).to.equal('https://www.buildnumber.dev/index.html')
+    })
 })

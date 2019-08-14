@@ -63,6 +63,19 @@ const initServer = async() => {
     await server.register(hapiBasic)
     server.auth.strategy('simple', 'basic', { validate: validateToken })
     
+    // Redirect root domain to www
+    server.ext('onRequest', (request, h) => {
+        const host = request.info.host
+        if (host !== 'buildnumber.dev') {
+            return h.continue
+        }
+        
+        return h
+        .redirect('https://www.buildnumber.dev' + (request.url.path || request.url.pathname + request.url.search))
+        .takeover()
+        .code(301)
+    })
+    
     // Static files, only served on www and localhost
     server.route({
         method: 'GET',
