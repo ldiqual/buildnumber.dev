@@ -23,7 +23,7 @@ exports.up = function(knex) {
         columns.createdAt(t)
         t.uuid('account_id').references('accounts.id').notNullable()
         t.uuid('app_id').references('apps.id').notNullable()
-        t.string('value', 290).unique().notNullable() // app-identifier + unique string
+        t.string('value', 16).unique().notNullable()
     })
     .createTable('builds', function(t) {
         columns.pk(t)

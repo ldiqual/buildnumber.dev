@@ -1,7 +1,7 @@
 Welcome to buildnumber.dev!
 --------------------------
 
-Your API token is {{ tokenValue }}.
+Your API token is {{ tokenValue }}, for the app {{ bundleIdentifier }}.
 
 Request your first build number with the following code:
 

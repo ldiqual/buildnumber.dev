@@ -114,8 +114,7 @@ const initServer = async() => {
             }).save()
             
             // Token
-            const randomString = (await crypto.randomBytes(32)).toString('hex')
-            const tokenValue = `${bundleIdentifier}-${randomString}`
+            const tokenValue = (await crypto.randomBytes(32)).toString('hex').substring(0, 15)
             await Token.forge({
                 accountId: account.id,
                 appId: app.id,
@@ -123,8 +122,8 @@ const initServer = async() => {
             }).save()
             
             // Email templates
-            const emailTextContent = nunjucks.render('./email-templates/welcome-email.txt', { tokenValue })
-            const emailHtmlContent = nunjucks.render('./email-templates/welcome-email-inlined.html', { tokenValue })
+            const emailTextContent = nunjucks.render('./email-templates/welcome-email.txt', { bundleIdentifier, tokenValue })
+            const emailHtmlContent = nunjucks.render('./email-templates/welcome-email-inlined.html', { bundleIdentifier, tokenValue })
             
             const emailData = {
                 from: 'buildnumber.dev <welcome@buildnumber.dev>',
