@@ -531,3 +531,74 @@ describe('CORS in production', async() => {
         await validateEndpoint({ method: 'GET', endpoint: '/builds/10' })
     })
 })
+
+describe('the routing system', async() => {
+    it('only delivers static files on www', async() => {
+        
+        const staticResponse = await server.inject({
+            method: 'GET',
+            url: '/index.html',
+            headers: {
+                'Host': 'www.buildnumber.dev',
+            }
+        })
+        expect(staticResponse.statusCode).to.equal(200)
+        
+        const apiResponse = await server.inject({
+            method: 'OPTIONS',
+            url: '/api/tokens',
+            headers: {
+                'Host': 'www.buildnumber.dev',
+                'Access-Control-Request-Method': 'POST',
+                'Origin': 'https://www.buildnumber.dev',
+            }
+        })
+        expect(apiResponse.statusCode).to.equal(404)
+    })
+    
+    it('only serves the api on api.buildnumber.dev', async() => {
+        
+        const staticResponse = await server.inject({
+            method: 'GET',
+            url: '/index.html',
+            headers: {
+                'Host': 'api.buildnumber.dev',
+            }
+        })
+        expect(staticResponse.statusCode).to.equal(404)
+        
+        const apiResponse = await server.inject({
+            method: 'OPTIONS',
+            url: '/tokens',
+            headers: {
+                'Host': 'api.buildnumber.dev',
+                'Access-Control-Request-Method': 'POST',
+                'Origin': 'https://www.buildnumber.dev',
+            }
+        })
+        expect(apiResponse.statusCode).to.equal(200)
+    })
+    
+    it('delivers both api and static files locally', async() => {
+        
+        const staticResponse = await server.inject({
+            method: 'GET',
+            url: '/index.html',
+            headers: {
+                'Host': server.info.host,
+            }
+        })
+        expect(staticResponse.statusCode).to.equal(200)
+        
+        const apiResponse = await server.inject({
+            method: 'OPTIONS',
+            url: '/api/tokens',
+            headers: {
+                'Host': server.info.host,
+                'Access-Control-Request-Method': 'POST',
+                'Origin': 'https://www.buildnumber.dev',
+            }
+        })
+        expect(apiResponse.statusCode).to.equal(200)
+    })
+})

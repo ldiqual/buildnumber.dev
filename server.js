@@ -52,16 +52,25 @@ const initServer = async() => {
     const server = new Hapi.Server({
         port: process.env.PORT || 3000,
         host: '0.0.0.0',
-        debug: { request: ['error'] }
+        debug: {
+            request: ['error']
+        }
     })
 
     await server.register(inert)
     await server.register(hapiBasic)
     server.auth.strategy('simple', 'basic', { validate: validateToken })
-
+    
+    // Static files, only served on www and localhost
     server.route({
         method: 'GET',
         path: '/{param*}',
+        vhost: [
+            'www.buildnumber.dev',
+            server.info.host,
+            '127.0.0.1',
+            'localhost'
+        ],
         handler: {
             directory: {
                 path: path.join(__dirname, 'static'),
@@ -72,13 +81,18 @@ const initServer = async() => {
     
     const addRoute = (params) => {
         
-        // http://localhost/api/
+        // localhost/api/
         server.route({
             ...params,
+            vhost: [
+                server.info.host,
+                '127.0.0.1',
+                'localhost'
+            ],
             path: `/api${params.path}`
         })
         
-        // https://api.buildnumber.dev
+        // api.buildnumber.dev
         server.route({
             ...params,
             options: {
