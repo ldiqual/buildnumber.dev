@@ -42,7 +42,7 @@ describe('POST /tokens', async() => {
         expect(response.statusCode).to.equal(400)
     })
     
-    it('fails if no bundle indentifier', async() => {
+    it('fails if no bundle identifier', async() => {
         const response = await server.inject({
             method: 'POST',
             url: '/api/tokens',
@@ -53,7 +53,7 @@ describe('POST /tokens', async() => {
         expect(response.statusCode).to.equal(400)
     })
     
-    it('fails if invalid bundle indentifier', async() => {
+    it('fails if bundle identifier is too short', async() => {
         const response = await server.inject({
             method: 'POST',
             url: '/api/tokens',
@@ -65,7 +65,31 @@ describe('POST /tokens', async() => {
         expect(response.statusCode).to.equal(400)
     })
     
-    it('fails if same email + bundle indentifier was used', async() => {
+    it('fails if bundle identifier contains special characters', async() => {
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/tokens',
+            payload: {
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
+                bundleIdentifier: 'com.example.my_awesome-app2*'
+            }
+        })
+        expect(response.statusCode).to.equal(400)
+    })
+    
+    it('succeeds if bundle identifier is valid', async() => {
+        const response = await server.inject({
+            method: 'POST',
+            url: '/api/tokens',
+            payload: {
+                emailAddress: 'buildnumber-dev-test@yopmail.com',
+                bundleIdentifier: 'com.example.my_awesome-app2'
+            }
+        })
+        expect(response.statusCode).to.equal(201)
+    })
+    
+    it('fails if same email + bundle identifier was used', async() => {
         
         const account = await testUtils.createAccount({ emailAddress: 'buildnumber-dev-test@yopmail.com' })
         await testUtils.createApp({ bundleIdentifier: 'com.example.myapp1', accountId: account.id })
@@ -91,7 +115,7 @@ describe('POST /tokens', async() => {
         expect(response2.statusCode).to.equal(201)
     })
     
-    it('succeeds with proper email + bundle indentifier', async() => {
+    it('succeeds with proper email + bundle identifier', async() => {
         const response = await server.inject({
             method: 'POST',
             url: '/api/tokens',

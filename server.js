@@ -128,7 +128,7 @@ const initServer = async() => {
             validate: {
                 payload: {
                     emailAddress: Joi.string().email().required(),
-                    bundleIdentifier: Joi.string().min(3).required()
+                    bundleIdentifier: Joi.string().min(3).regex(/^[\d\w_\-\\.]+$/i).required()
                 }
             }
         },
