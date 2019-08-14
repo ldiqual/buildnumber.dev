@@ -4,7 +4,7 @@ const ladda = require('ladda')
 require('ladda/dist/ladda.min.css')
 
 let API_URL = 'https://api.buildnumber.dev'
-if (window.location.hostname !== 'buildnumber.dev') {
+if (window.location.hostname !== 'www.buildnumber.dev') {
     API_URL = `//${window.location.host}/api`
 }
 
