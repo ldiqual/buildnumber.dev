@@ -1,4 +1,4 @@
-buildNumber.dev
+buildnumber.dev
 ===============
 
 Centralized build numbers for your apps and libraries. <https://www.buildnumber.dev/>
