@@ -18,6 +18,7 @@ jobs:
           key: *cache-key
           paths:
             - node_modules/
+      - run: npm run knext -- migrate:latest
       - run: npm run lint
       - run: npm run test
 workflows:
