@@ -37,6 +37,7 @@ const validateToken = async (request, tokenValue) => {
   // Fetch token with same value
   const token = await Token.forge({ value: tokenValue }).fetch({
     withRelated: ['account', 'app'],
+    require: false,
   })
   if (token === null) {
     return { credentials: null, isValid: false }
@@ -133,7 +134,7 @@ const initServer = async () => {
       const emailAddress = request.payload.emailAddress.toLowerCase()
       const bundleIdentifier = request.payload.bundleIdentifier.toLowerCase()
 
-      let account = await Account.forge({ emailAddress }).fetch()
+      let account = await Account.forge({ emailAddress }).fetch({ require: false })
       if (!account) {
         account = await Account.forge({ emailAddress }).save()
       }
@@ -206,7 +207,9 @@ const initServer = async () => {
       const appId = request.auth.credentials.appId
       const metadata = _.get(request.payload, 'metadata', {})
       const outputBuildNumber = request.query.output === 'buildNumber'
-      const lastBuild = await Build.forge({ appId: appId }).orderBy('build_number', 'DESC').fetch()
+      const lastBuild = await Build.forge({ appId: appId })
+        .orderBy('build_number', 'DESC')
+        .fetch({ require: false })
 
       let build = null
       if (lastBuild) {
@@ -255,10 +258,17 @@ const initServer = async () => {
     handler: async (request) => {
       const appId = request.auth.credentials.appId
       const outputBuildNumber = request.query.output === 'buildNumber'
-      const lastBuild = await Build.forge({ appId }).orderBy('build_number', 'DESC').fetch()
 
-      if (!lastBuild) {
-        throw Boom.notFound("Couldn't find a build for this application")
+      let lastBuild
+
+      try {
+        lastBuild = await Build.forge({ appId }).orderBy('build_number', 'DESC').fetch()
+      } catch (err) {
+        if (err instanceof Build.NotFoundError) {
+          throw Boom.notFound("Couldn't find a build for this application")
+        } else {
+          throw err
+        }
       }
 
       const buildNumber = Number(lastBuild.get('buildNumber'))
@@ -294,10 +304,16 @@ const initServer = async () => {
       const appId = request.auth.credentials.appId
       const buildNumber = request.params.buildNumber
       const outputBuildNumber = request.query.output === 'buildNumber'
-      const build = await Build.forge({ appId, buildNumber }).fetch()
 
-      if (!build) {
-        throw Boom.notFound("Couldn't find a build with this build number")
+      let build
+      try {
+        build = await Build.forge({ appId, buildNumber }).fetch()
+      } catch (err) {
+        if (err instanceof Build.NotFoundError) {
+          throw Boom.notFound("Couldn't find a build for this application")
+        } else {
+          throw err
+        }
       }
 
       const metadata = build.get('metadata')
