@@ -26,7 +26,7 @@
     "bookshelf-camelcase": "^2.0.1",
     "hapi-require-https": "^3.0.1",
     "juice": "^6.0.0",
-    "knex": "^0.19.1",
+    "knex": "^0.21.0",
     "ladda": "^2.0.1",
     "lodash": "^4.17.15",
     "mailgun-js": "^0.22.0",
