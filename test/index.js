@@ -768,7 +768,7 @@ describe('the routing system', async () => {
         Origin: 'https://www.buildnumber.dev',
       },
     })
-    expect(apiResponse.statusCode).to.equal(200)
+    expect(apiResponse.statusCode).to.equal(204)
   })
 
   it('delivers both api and static files locally', async () => {
