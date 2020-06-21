@@ -1,6 +1,6 @@
 {
-    "extends": "@scoop/eslint-config-scoop",
-    "parserOptions": {
-        "ecmaVersion": 2018
-    }
+  "extends": "@scoop/eslint-config-scoop",
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
 }

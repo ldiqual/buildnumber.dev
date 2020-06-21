@@ -47,10 +47,18 @@
     "eslint": "5.16.0",
     "eslint-plugin-dependencies": "2.4.0",
     "eslint-plugin-implicit-dependencies": "1.0.4",
+    "husky": "4.2.5",
     "mocha": "6.2.0",
+    "prettier": "2.0.5",
+    "pretty-quick": "2.0.1",
     "style-loader": "1.0.0",
     "webpack": "4.39.2",
     "webpack-cli": "3.3.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "author": "",
   "license": "ISC"

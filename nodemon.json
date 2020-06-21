@@ -1,9 +1,3 @@
 {
-    "ignore": [
-      ".git",
-      "node_modules/**/node_modules",
-      "static",
-      "migrations",
-      "test"
-    ]
+  "ignore": [".git", "node_modules/**/node_modules", "static", "migrations", "test"]
 }

@@ -1,133 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>buildnumber.dev</title>
 
     <!-- VENDOR -->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css" />
 
     <!-- CUSTOM -->
-    <link href="css/app.css" rel="stylesheet">
-</head>
-<body>
+    <link href="css/app.css" rel="stylesheet" />
+  </head>
+  <body>
     <div class="container">
-        <div id="title" class="row">
-            <img src="img/logo-title.png" id="logo-title">
-        </div>
-        <div id="subtitle" class="row">
+      <div id="title" class="row">
+        <img src="img/logo-title.png" id="logo-title" />
+      </div>
+      <div id="subtitle" class="row">
+        <p>
+          Centralized build numbers for your apps and libraries.
+        </p>
+      </div>
+      <div id="signup" class="row">
+        <form action="#" id="signup-form">
+          <input type="text" placeholder="Your email" id="email-field" />
+          <input type="text" placeholder="App identifier" id="bundle-identifier-field" />
+          <button id="signup-button" class="ladda-button" data-style="expand-right">
+            <span class="button-text ladda-label">Get API token</span>
+          </button>
+        </form>
+      </div>
+      <div id="signup-result" class="row closed">
+        <div class="result result-success">Success!</div>
+        <div class="result result-error">Error!</div>
+      </div>
+      <div id="console" class="row">
+        <div id="console-container">
+          <div id="console-content">
             <p>
-                Centralized build numbers for your apps and libraries.
+              $ <span class="blue">curl -X POST</span>
+              <span class="orange">https://api.buildnumber.dev/builds</span> \<br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">--user</span>
+              <span class="orange"><span class="api-key">API_TOKEN</span>:</span>
             </p>
+            <p>&nbsp;</p>
+            <p>{“buildNumber": 42}</p>
+          </div>
         </div>
-        <div id="signup" class="row">
-            <form action="#" id="signup-form">
-                <input type="text" placeholder="Your email" id="email-field">
-                <input type="text" placeholder="App identifier" id="bundle-identifier-field">
-                <button id="signup-button" class="ladda-button" data-style="expand-right"><span class="button-text ladda-label">Get API token</span></button>
-            </form>
-        </div>
-        <div id="signup-result" class="row closed">
-            <div class="result result-success">Success!</div>
-            <div class="result result-error">Error!</div>
-        </div>
-        <div id="console" class="row">
-            <div id="console-container">
-                <div id="console-content">
-                    <p>
-                    $ <span class="blue">curl -X POST</span> <span class="orange">https://api.buildnumber.dev/builds</span> \<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">--user</span> <span class="orange"><span class="api-key">API_TOKEN</span>:</span>
-                    </p>
-                    <p>&nbsp;</p>
-                    <p>{“buildNumber": 42}</p>
-                </div>
-            </div>
-        </div>
-        <div class="doc row" id="whatisthis">
-            <h1>What is this?</h1>
+      </div>
+      <div class="doc row" id="whatisthis">
+        <h1>What is this?</h1>
 
-            <img id="diagram" src="img/diagram.png">
+        <img id="diagram" src="img/diagram.png" />
 
-            <p><span class="brand">buildnumber.dev</span> centralizes all your build numbers so they're kept in sync.</p>
+        <p>
+          <span class="brand">buildnumber.dev</span> centralizes all your build numbers so they're
+          kept in sync.
+        </p>
 
-            <p>For instance, if you use Travis to build your iOS app but also build from your own computer, you’ll need to make sure Travis doesn't use the same build number than your computer's. You'll also need to make sure each build number is unique and incremental.</p>
+        <p>
+          For instance, if you use Travis to build your iOS app but also build from your own
+          computer, you’ll need to make sure Travis doesn't use the same build number than your
+          computer's. You'll also need to make sure each build number is unique and incremental.
+        </p>
 
-            <p>This is where <span class="brand">buildnumber.dev</span> is helpful: by centralizing all your build numbers into one single database, we can give you a new, unique, and sequential build number to use in your next build.</p>
-        </div>
+        <p>
+          This is where <span class="brand">buildnumber.dev</span> is helpful: by centralizing all
+          your build numbers into one single database, we can give you a new, unique, and sequential
+          build number to use in your next build.
+        </p>
+      </div>
 
-        <div class="doc row" id="examples">
-            <h1>Examples</h1>
+      <div class="doc row" id="examples">
+        <h1>Examples</h1>
 
-            
-            <h2>Create a new build</h2>
+        <h2>Create a new build</h2>
 
-            
-            <p><p>This will create a new build for the <code>com.example.myapp</code> package. If you never created a build for this package before, the initial build number will be <code>1</code>.</p></p>
-            
+        <p>
+          This will create a new build for the <code>com.example.myapp</code> package. If you never
+          created a build for this package before, the initial build number will be <code>1</code>.
+        </p>
 
-            <pre><code>$ curl -X POST https://api.buildnumber.dev/builds \
+        <pre><code>$ curl -X POST https://api.buildnumber.dev/builds \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 42}</code></pre>
-            
-            <h2>Create a new build and return its build number in plain text</h2>
 
-            
-            <p><p>This is useful for bash scripts, since you can just store the request output in a variable.</p></p>
-            
+        <h2>Create a new build and return its build number in plain text</h2>
 
-            <pre><code>$ curl -X POST https://api.buildnumber.dev/builds?output=buildNumber \
+        <p>
+          This is useful for bash scripts, since you can just store the request output in a
+          variable.
+        </p>
+
+        <pre><code>$ curl -X POST https://api.buildnumber.dev/builds?output=buildNumber \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>43</code></pre>
-            
-            <h2>Create a new build with additional information</h2>
 
-            
-            <p><p>You can pass a JSON-encoded meta data dictionary for your build. You can retrieve this data later when querying a specific build.</p></p>
-            
+        <h2>Create a new build with additional information</h2>
 
-            <pre><code>$ curl -X POST https://api.buildnumber.dev/builds \
+        <p>
+          You can pass a JSON-encoded meta data dictionary for your build. You can retrieve this
+          data later when querying a specific build.
+        </p>
+
+        <pre><code>$ curl -X POST https://api.buildnumber.dev/builds \
     --header 'Content-Type: application/json' \
     --data '{"head": "60b7eca"}' \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 44, "head": "60b7eca"}</code></pre>
-            
-            <h2>Get the last build</h2>
 
-            
+        <h2>Get the last build</h2>
 
-            <pre><code>$ curl https://api.buildnumber.dev/builds/last \
+        <pre><code>$ curl https://api.buildnumber.dev/builds/last \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 44, "head": "60b7eca"}</code></pre>
-            
-            <h2>Get a specific build by its build number</h2>
 
-            
+        <h2>Get a specific build by its build number</h2>
 
-            <pre><code>$ curl https://api.buildnumber.dev/builds/43 \
+        <pre><code>$ curl https://api.buildnumber.dev/builds/43 \
     --user <span class="api-key">API_TOKEN</span>:</code>
     <code>{"buildNumber": 43, "head": "43b8ecf"}</code></pre>
-            
-        </div>
+      </div>
 
-        <div id="footer">
-            <p><img src="img/ldiqual.png">Copyright 2019 <a href="http://loisdiqual.com/">Loïs Di Qual</a> - <a href="mailto:support@buildnumber.dev">Support</a> - <a href="https://github.com/ldiqual/buildnumber.dev">Source Code</a></p>
-        </div>
+      <div id="footer">
+        <p>
+          <img src="img/ldiqual.png" />Copyright 2019
+          <a href="http://loisdiqual.com/">Loïs Di Qual</a> -
+          <a href="mailto:support@buildnumber.dev">Support</a> -
+          <a href="https://github.com/ldiqual/buildnumber.dev">Source Code</a>
+        </p>
+      </div>
     </div>
 
     <script src="dist/app.js"></script>
 
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ;(function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r
+        ;(i[r] =
+          i[r] ||
+          function () {
+            ;(i[r].q = i[r].q || []).push(arguments)
+          }),
+          (i[r].l = 1 * new Date())
+        ;(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0])
+        a.async = 1
+        a.src = g
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga')
 
-      ga('create', 'UA-72694257-1', 'auto');
-      ga('send', 'pageview');
-
+      ga('create', 'UA-72694257-1', 'auto')
+      ga('send', 'pageview')
     </script>
-</body>
+  </body>
 </html>

@@ -1,15 +1,12 @@
-buildnumber.dev
-===============
+# buildnumber.dev
 
 Centralized build numbers for your apps and libraries. <https://www.buildnumber.dev/>
 
-Usage
------
+## Usage
 
 Complete usage documentation is provided at <https://www.buildnumber.dev/#examples>.
 
-Develop
--------
+## Develop
 
 ### Dependencies
 
@@ -37,4 +34,3 @@ $ npm run test
 ```
 $ git push heroku master
 ```
-
