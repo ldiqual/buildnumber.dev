@@ -121,13 +121,13 @@ const initServer = async () => {
     path: '/tokens',
     options: {
       validate: {
-        payload: {
+        payload: Joi.object({
           emailAddress: Joi.string().email().required(),
           bundleIdentifier: Joi.string()
             .min(3)
             .regex(/^[\d\w_\-\\.]+$/i)
             .required(),
-        },
+        }),
       },
     },
     handler: async (request, h) => {
@@ -198,9 +198,9 @@ const initServer = async () => {
         payload: Joi.object({
           metadata: Joi.object().optional(),
         }).allow(null),
-        query: {
+        query: Joi.object({
           output: Joi.string().valid('buildNumber').optional(),
-        },
+        }),
       },
     },
     handler: async (request, h) => {
@@ -250,9 +250,9 @@ const initServer = async () => {
     options: {
       auth: 'simple',
       validate: {
-        query: {
+        query: Joi.object({
           output: Joi.string().valid('buildNumber').optional(),
-        },
+        }),
       },
     },
     handler: async (request) => {
@@ -292,12 +292,12 @@ const initServer = async () => {
     options: {
       auth: 'simple',
       validate: {
-        params: {
+        params: Joi.object({
           buildNumber: Joi.number().integer().min(1).required(),
-        },
-        query: {
+        }),
+        query: Joi.object({
           output: Joi.string().valid('buildNumber').optional(),
-        },
+        }),
       },
     },
     handler: async (request) => {
