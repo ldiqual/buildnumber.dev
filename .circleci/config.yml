@@ -9,6 +9,7 @@ jobs:
       - image: circleci/postgres:11.5-ram
         environment:
           POSTGRES_DB: buildnumber-test
+          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - checkout
       - restore_cache:
