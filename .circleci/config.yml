@@ -6,7 +6,7 @@ jobs:
   build-and-test:
     docker:
       - image: circleci/node:10.21
-      - image: circleci/postgres:11.5-ram
+      - image: circleci/postgres:11.8-ram
         environment:
           POSTGRES_DB: buildnumber-test
           POSTGRES_HOST_AUTH_METHOD: trust
