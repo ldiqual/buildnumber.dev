@@ -41,7 +41,7 @@
     "@scoop/eslint-config-scoop": "5.0.0",
     "babel-loader": "8.0.6",
     "chai": "4.2.0",
-    "concurrently": "4.1.1",
+    "concurrently": "4.1.2",
     "css-loader": "3.2.0",
     "dotenv": "8.0.0",
     "eslint": "5.16.0",
