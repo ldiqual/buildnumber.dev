@@ -21,6 +21,7 @@ jobs:
       - run: npm run knext -- migrate:latest
       - run: npm run lint
       - run: npm run test
+      - run: npm run build
 workflows:
   build-and-test:
     jobs:
