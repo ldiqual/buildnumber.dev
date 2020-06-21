@@ -22,7 +22,7 @@
     "@hapi/inert": "^5.2.1",
     "@hapi/joi": "^15.1.0",
     "bluebird": "^3.5.5",
-    "bookshelf": "^0.15.1",
+    "bookshelf": "^1.0.0",
     "bookshelf-camelcase": "^2.0.1",
     "hapi-require-https": "^3.0.1",
     "juice": "^6.0.0",
