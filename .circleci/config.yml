@@ -1,0 +1,27 @@
+cache-key: &cache-key v1-dependencies-{{ checksum "package-lock.json" }}
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/node:10.15
+      - image: circleci/postgres:11.5-ram
+        environment:
+          POSTGRES_DB: buildnumber-test
+    steps:
+      - checkout
+      - restore_cache:
+          key: *cache-key
+      - run: npm install
+      - save_cache:
+          key: *cache-key
+          paths:
+            - node_modules/
+      - run: npm run knext -- migrate:latest
+      - run: npm run lint
+      - run: npm run test
+workflows:
+  build-and-test:
+    jobs:
+      - build-and-test
