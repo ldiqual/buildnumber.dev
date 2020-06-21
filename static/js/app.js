@@ -79,7 +79,7 @@ form.addEventListener('submit', async (ev) => {
       }
       return res
     })
-    .then((res) => {
+    .then(() => {
       const msg = `Your API token has been sent to ${emailAddress}<br>Check your emails!`
       showSuccess(msg)
     })

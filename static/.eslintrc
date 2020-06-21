@@ -1,5 +1,8 @@
 {
-  "extends": "@scoop/eslint-config-scoop",
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
   "parserOptions": {
     "sourceType": "module"
   },

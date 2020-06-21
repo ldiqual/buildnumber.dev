@@ -26,7 +26,7 @@ const mailgun = mailgunApi({
 })
 
 // Token value is the basic auth username
-const validateToken = async (request, tokenValue, password, h) => {
+const validateToken = async (request, tokenValue) => {
   // Ensure token is of appropriate length
   try {
     Joi.assert(tokenValue, Joi.string().length(16).required())
@@ -252,7 +252,7 @@ const initServer = async () => {
         },
       },
     },
-    handler: async (request, h) => {
+    handler: async (request) => {
       const appId = request.auth.credentials.appId
       const outputBuildNumber = request.query.output === 'buildNumber'
       const lastBuild = await Build.forge({ appId }).orderBy('build_number', 'DESC').fetch()
@@ -290,7 +290,7 @@ const initServer = async () => {
         },
       },
     },
-    handler: async (request, h) => {
+    handler: async (request) => {
       const appId = request.auth.credentials.appId
       const buildNumber = request.params.buildNumber
       const outputBuildNumber = request.query.output === 'buildNumber'
