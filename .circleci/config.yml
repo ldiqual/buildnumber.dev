@@ -5,7 +5,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: circleci/node:12.18
+      - image: circleci/node:12.22
       - image: circleci/postgres:11.8-ram
         environment:
           POSTGRES_DB: buildnumber-test
